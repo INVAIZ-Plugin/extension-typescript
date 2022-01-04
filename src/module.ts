@@ -63,6 +63,7 @@ const PrLumetri = {
     const version: number = parseInt(app.version.split('.')[0]);
     let newValue = value + diff * Math.abs(diff);
     let temp: number = version >= 22 ? 2 : 0;
+
     switch (props) {
       case 10 + temp:
       case 11 + temp:
