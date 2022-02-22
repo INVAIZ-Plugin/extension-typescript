@@ -4,19 +4,13 @@ interface ReturnClipType {
 }
 type EN_DISPLAY_TYPE = 'Opacity' | 'Motion' | 'Lumetri Color';
 type KR_DISPLAY_TYPE = '불투명도' | '동작모션' | 'Lumetri 색상';
+
 const PrController = {
-  modify(
-    props: number,
-    diff: number,
-    type: EN_DISPLAY_TYPE,
-    cb: any,
-    propsValueIndex?: number
-  ) {
+  modify(props: number, diff: number, type: EN_DISPLAY_TYPE, cb: any, propsValueIndex?: number) {
     const { clip, clipComponents } = this.getClip();
     if (clipComponents && clip) {
       const name: string = clipComponents[0].displayName;
-      const currentType: EN_DISPLAY_TYPE | KR_DISPLAY_TYPE =
-        this.getDisplayName(name, type);
+      const currentType: EN_DISPLAY_TYPE | KR_DISPLAY_TYPE = this.getDisplayName(name, type);
       for (let i: number = 0; i < clipComponents?.numItems; i++) {
         const { displayName } = clipComponents[i];
         if (currentType.indexOf(displayName) !== -1) {
@@ -34,9 +28,7 @@ const PrController = {
             return newValue.toFixed(1);
           } else {
             let time: Time = app.project.activeSequence.getPlayerPosition();
-            var clipTime =
-              (time.seconds - clip.start.seconds + clip.inPoint.seconds) *
-              clip.getSpeed();
+            var clipTime = (time.seconds - clip.start.seconds + clip.inPoint.seconds) * clip.getSpeed();
             if (targetProperty.areKeyframesSupported() === true) {
               let value = targetProperty.getValueAtTime(clipTime);
               let newValue = cb({
@@ -81,12 +73,9 @@ const PrController = {
     const version: number = parseInt(app.version.split('.')[0]);
     return version;
   },
-  getDisplayName(
-    effectName: string,
-    type: EN_DISPLAY_TYPE
-  ): EN_DISPLAY_TYPE | KR_DISPLAY_TYPE {
-    const check_eng = /[a-zA-Z]/; // 문자
-    const checker = check_eng.test(effectName);
+  getDisplayName(effectName: string, type: EN_DISPLAY_TYPE): EN_DISPLAY_TYPE | KR_DISPLAY_TYPE {
+    const regExp = /[a-zA-Z]/;
+    const checker = regExp.test(effectName);
     switch (type) {
       case 'Opacity':
         return checker ? 'Opacity' : '불투명도';

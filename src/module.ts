@@ -26,13 +26,7 @@ const PrOpacity = {
 
 const PrMotion = {
   modify(props: number, diff: number, propsValueIndex: number) {
-    PrController.modify(
-      props,
-      diff,
-      'Motion',
-      this.calcNewValue,
-      propsValueIndex
-    );
+    PrController.modify(props, diff, 'Motion', this.calcNewValue, propsValueIndex);
   },
   calcNewValue(obj: CalcMotion) {
     const { value, diff, propsValueIndex } = obj;
