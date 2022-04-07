@@ -10,6 +10,13 @@ declare interface Payload {
   readonly propsIndex?: number;
 }
 
+declare interface Params {
+  readonly value: number | number[];
+  readonly diff: number;
+  readonly props?: number;
+  readonly propsIndex?: number;
+}
+
 declare type EN = 'Opacity' | 'Motion' | 'Lumetri Color';
 declare type KR = '불투명도' | '동작모션' | 'Lumetri 색상';
 

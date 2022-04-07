@@ -1,13 +1,6 @@
 import PrController from './main';
 import PrUtils from './utils';
 
-interface Params {
-  readonly value: number | number[];
-  readonly diff: number;
-  readonly props?: number;
-  readonly propsIndex?: number;
-}
-
 const PrOpacity = {
   modify(payload: Payload) {
     PrController.excute(payload, 'Opacity', PrOpacity.calcNewValue);
