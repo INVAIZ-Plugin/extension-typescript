@@ -3,9 +3,16 @@
 
 declare var app: App;
 
-declare interface Modify {
-  modify(props: number, diff: number, cb: any, obj?: any): void;
+// user data
+declare interface Payload {
+  readonly diff: number;
+  readonly props: number;
+  readonly propsIndex?: number;
 }
+
+declare type EN = 'Opacity' | 'Motion' | 'Lumetri Color';
+declare type KR = '불투명도' | '동작모션' | 'Lumetri 색상';
+
 /**
  * 0 = false,
  * 1 = true
@@ -91,6 +98,8 @@ declare class Sequence extends PremiereObject {
   readonly timebase: string;
   readonly zeroPoint: string;
 
+  getSettings(): any;
+
   /**
    * Attaches a custom property, and value, to the sequence. This property is visible if/when the sequence is exported to FCP XML.
    */
@@ -106,18 +115,11 @@ declare class Sequence extends PremiereObject {
   /**
    * Creates a new FCP XML file containing only this sequence and its constituent media items.
    */
-  exportAsFinalCutProXML(
-    exportPath: string,
-    suppressUI: NumericalBool
-  ): boolean;
+  exportAsFinalCutProXML(exportPath: string, suppressUI: NumericalBool): boolean;
   /**
    * Renders the sequence to the specified output path, using the specified path. workAreaType can be ENCODE_WORKAREA, ENCODE_ENTIRE, or ENCODE_IN_TO_OUT.
    */
-  exportAsMediaDirect(
-    outputFilePath: string,
-    presetPath: string,
-    workAreaType?: EncoderOptions
-  ): string;
+  exportAsMediaDirect(outputFilePath: string, presetPath: string, workAreaType?: EncoderOptions): string;
   /**
    * Returns time of sequence's in point, in seconds.
    */
@@ -426,14 +428,7 @@ declare class ProjectItem extends PremiereObject {
    * Returns a new bin, based on the specified query.
    */
   createSmartBin(name: string, query: string): ProjectItem;
-  createSubClip(
-    name: string,
-    startTime: Object,
-    endTime: Object,
-    hasHardBoundaries: number,
-    takeVideo?: NumericalBool,
-    takeAudio?: NumericalBool
-  ): ProjectItem;
+  createSubClip(name: string, startTime: Object, endTime: Object, hasHardBoundaries: number, takeVideo?: NumericalBool, takeAudio?: NumericalBool): ProjectItem;
   /**
    * Deletes the bin (the same bin, of which this is a method) from the project.
    */
@@ -445,10 +440,7 @@ declare class ProjectItem extends PremiereObject {
    * @param matchString String to search for.
    * @param ignoreSubclips Whether or not to ignore subclips.
    */
-  findItemsMatchingMediaPath(
-    matchString: string,
-    ignoreSubclips?: NumericalBool
-  ): Array<ProjectItem>;
+  findItemsMatchingMediaPath(matchString: string, ignoreSubclips?: NumericalBool): Array<ProjectItem>;
   /**
    * Returns the MarkerCollection associated with the projectItem; if there are no markers, this will return undefined.
    */
@@ -523,25 +515,12 @@ declare class Encoder extends PremiereObject {
   /**
    * According to the Object Model Viewer, the removeOnCompletion parameter is optional and has a default value of 0. The startTime and endTime parameters, however, have no such notes. Also, are startTime and stopTime @type {Time} instances?
    */
-  encodeFile(
-    inputFilePath: string,
-    outputFilePath: string,
-    presetPath: string,
-    removeOnCompletion: NumericalBool,
-    startTime: Object,
-    stopTime: Object
-  ): string;
+  encodeFile(inputFilePath: string, outputFilePath: string, presetPath: string, removeOnCompletion: NumericalBool, startTime: Object, stopTime: Object): string;
   /**
    * @param {number} WorkAreaType - Default Value 0.
    * @param {number} removeOnCompletion - Default Value 0.
    */
-  encodeProjectItem(
-    projectItem: ProjectItem,
-    outputFilePath: string,
-    presetPath: string,
-    WorkAreaType?: EncoderOptions,
-    removeOnCompletion?: NumericalBool
-  ): string;
+  encodeProjectItem(projectItem: ProjectItem, outputFilePath: string, presetPath: string, WorkAreaType?: EncoderOptions, removeOnCompletion?: NumericalBool): string;
   /**
    * Renders the specified sequence, using the specified output preset, to the specified
    * output path, with options. Returns the jobID of the encoder job started for the
@@ -553,13 +532,7 @@ declare class Encoder extends PremiereObject {
    * Encoder queue upon completion. This can prevent out-of-memory problems when
    * performing many renders.
    */
-  encodeSequence(
-    sequence: Sequence,
-    outputFilePath: string,
-    presetPath: string,
-    WorkAreaType?: EncoderOptions,
-    removeOnCompletion?: NumericalBool
-  ): string;
+  encodeSequence(sequence: Sequence, outputFilePath: string, presetPath: string, WorkAreaType?: EncoderOptions, removeOnCompletion?: NumericalBool): string;
   /**
    * Launches Adobe Media Encoder. This can take a while, so if you're going to render using AME, call this early.
    */
@@ -603,11 +576,7 @@ declare class Project extends PremiereObject {
    *  2 = Text,
    *  3 = Boolean.
    */
-  addPropertyToProjectMetadataScheme(
-    name: string,
-    label: string,
-    type: MetadataPropertyType
-  ): boolean;
+  addPropertyToProjectMetadataScheme(name: string, label: string, type: MetadataPropertyType): boolean;
   /**
    * Returns 0 if Premiere Pro successfully closes the current project.
    */
@@ -644,7 +613,7 @@ declare class Project extends PremiereObject {
     embedAudio: NumericalBool,
     audioFileFormat: AudioFileFormat,
     trimSources: TrimFilesOption,
-    handleFrames: number
+    handleFrames: number,
   ): number;
   /**
    * Returns 0 if Premiere Pro successfully exports the current project to the specified path. If supressUI is true, no warnings will be displayed.
@@ -673,7 +642,7 @@ declare class Project extends PremiereObject {
     audioFileFormat: AudioFileFormat,
     trimAudioFiles: TrimFilesOption,
     handleFrames: number,
-    includePan: NumericalBool
+    includePan: NumericalBool,
   ): number;
   /**
    * Returns 0 if Premiere Pro successfully renders the current active sequence using an Export Controller plug-in with the specified name.
@@ -684,19 +653,12 @@ declare class Project extends PremiereObject {
    * Returns 0 if Premiere Pro successfully imports the array of file paths. If suppressUI is true, no UI will be presented. if importAsNumberedStills is true, Premiere Pro will attempt to import the array as a still image sequence.
    */
   importFiles(arg1: any): boolean;
-  importFiles(
-    arrayOfFilePathsToImport: Array<string>,
-    suppressUI?: boolean,
-    importAsNumberedStills?: boolean
-  ): boolean;
+  importFiles(arrayOfFilePathsToImport: Array<string>, suppressUI?: boolean, importAsNumberedStills?: boolean): boolean;
   /**
    * Returns 0 if Premiere Pro successfully imports the sequences with IDs specified, from that project.
    */
   importSequences(arg1: any): boolean;
-  importSequences(
-    pathToProjectFile: string,
-    arrayOfSeqIDsToImport: Array<number>
-  ): boolean;
+  importSequences(pathToProjectFile: string, arrayOfSeqIDsToImport: Array<number>): boolean;
   /**
    * Returns true if Premiere Pro was able to activate the sequence with the specified ID.
    */
@@ -829,11 +791,7 @@ declare class Anywhere extends PremiereObject {
   /**
    * Returns 1 if Premiere Pro successfully logs the specifed user into the server, using the token.
    */
-  setAuthenticationToken(
-    inEAServer: string,
-    inEAUsername: string,
-    inEAAuthToken: string
-  ): boolean;
+  setAuthenticationToken(inEAServer: string, inEAUsername: string, inEAAuthToken: string): boolean;
 }
 
 declare class RemoteProduction extends PremiereObject {
@@ -917,17 +875,9 @@ declare class ComponentParam extends PremiereObject {
   isTimeVarying(): boolean;
   keyExistsAtTime(): boolean;
   removeKey(): void;
-  removeKeyRange(
-    startTimeSeconds: number,
-    endTimeSeconds: number,
-    shouldUpdateUI: boolean
-  ): void;
+  removeKeyRange(startTimeSeconds: number, endTimeSeconds: number, shouldUpdateUI: boolean): void;
   setInterpolationTypeAtKey(): void;
   setTimeVarying(varying: boolean): void;
   setValue(value: number, updateUI: boolean): void;
-  setValueAtKey(
-    time: number | Time,
-    value: number | Time,
-    check: boolean
-  ): void;
+  setValueAtKey(time: number | Time, value: number | Time, check: boolean): void;
 }
