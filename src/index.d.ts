@@ -17,6 +17,12 @@ declare interface Params {
   readonly propsIndex?: number;
 }
 
+declare interface Effect {
+  index: number;
+  kr: string;
+  en: string;
+}
+
 declare type EN = 'Opacity' | 'Motion' | 'Lumetri Color';
 declare type KR = '불투명도' | '동작모션' | 'Lumetri 색상';
 

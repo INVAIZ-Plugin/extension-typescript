@@ -1,13 +1,14 @@
 import PrController from './main';
 import PrUtils from './utils';
-interface Motion {
-  position: number[];
-  scale: number;
-  scaleWidth: number;
-  rotate: number;
-  anchorPoint: number;
-  antiFickerFilter: number;
-}
+
+// interface MotionEffect {
+//   position: Effect;
+//   scale: Effect;
+//   scaleWidth: Effect;
+//   rotate: Effect;
+//   anchorPoint: Effect;
+//   antiFickerFilter: Effect;
+// }
 
 const PrMotion = {
   modify(payload: Payload) {
